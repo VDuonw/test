@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo Hợp Đồng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-details {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .order-details h5 {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>Tạo Hợp Đồng Cho Đơn Hàng: <span th:text="${order.orderCode}"></span></h2>
+
+        <!-- Hiển thị thông tin đơn hàng -->
+        <div class="order-details">
+            <h5>Thông Tin Đơn Hàng</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Địa Chỉ Nhận Hàng:</strong> <span th:text="${order.pickupAddress ?: 'N/A'}"></span></p>
+                    <p><strong>Địa Chỉ Giao Hàng:</strong> <span th:text="${order.deliveryAddress}"></span></p>
+                    <p><strong>Mô Tả Hàng Hóa:</strong>
+                        <span th:if="${order.itemDescription != null}" th:text="${order.itemDescription}"></span>
+                        <span th:unless="${order.itemDescription != null}">Không có mô tả</span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Khối Lượng:</strong> <span
+                            th:text="${order.weight != null ? order.weight : 'N/A'}"></span> kg</p>
+                    <p><strong>Trạng Thái:</strong> <span th:text="${order.status}"></span></p>
+                    <p><strong>Thời Gian Nhận Ưu Tiên:</strong>
+                        <span th:if="${order.preferredPickupTime != null}"
+                            th:text="${#dates.format(order.preferredPickupTime, 'dd/MM/yyyy HH:mm')}"></span>
+                        <span th:if="${order.preferredPickupTime == null}">Không có</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form tạo hợp đồng -->
+        <form th:action="@{/receptionist/create-contract}" method="post">
+            <input type="hidden" name="orderId" th:value="${order.orderId}">
+
+            <div class="mb-3">
+                <label for="terms" class="form-label">Điều Khoản Hợp Đồng</label>
+                <textarea id="terms" name="terms" class="form-control" rows="5"
+                    placeholder="Nhập điều khoản hợp đồng..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Tạo Hợp Đồng</button>
+            <a th:href="@{/receptionist/dashboard}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách khảo sát</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h2>Danh sách khảo sát</h2>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Mã đơn hàng</th>
+                        <th>Nhân viên khảo sát</th>
+                        <th>Ngày khảo sát</th>
+                        <th>Trạng thái</th>
+                        <th>Kết quả khảo sát</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="survey : ${surveys}">
+                        <td th:text="${survey.order != null ? survey.order.orderCode : 'N/A'}"></td>
+                        <td th:text="${survey.surveyor != null ? survey.surveyor.fullName : 'N/A'}"></td>
+                        <td
+                            th:text="${survey.surveyDate != null ? #dates.format(survey.surveyDate, 'dd/MM/yyyy') : 'N/A'}">
+                        </td>
+                        <td>
+                            <span th:class="${'badge ' + 
+                                (survey.status == 'pending' ? 'badge-warning' : 
+                                (survey.status == 'completed' ? 'badge-success' : 'badge-danger'))}" th:text="${survey.status == 'pending' ? 'Đang chờ' : 
+                                        (survey.status == 'completed' ? 'Hoàn thành' : 'Đã hủy')}">
+                            </span>
+                        </td>
+                        <td th:text="${survey.surveyResults != null ? survey.surveyResults : 'Chưa có'}"></td>
+                        <td
+                            th:text="${survey.createdAt != null ? #dates.format(survey.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">
+                        </td>
+                        <td>
+                            <a th:if="${survey.status == 'pending'}"
+                                th:href="@{/receptionist/surveys(surveyId=${survey.surveyId})}"
+                                class="btn btn-primary btn-sm">Xem chi tiết</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(surveys)}">
+                        <td colspan="7" class="text-center">Không có khảo sát nào</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/receptionist/dashboard" class="btn btn-secondary">Quay lại dashboard</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

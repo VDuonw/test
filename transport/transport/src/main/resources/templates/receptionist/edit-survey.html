@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh Sửa Khảo Sát</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .survey-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Chỉnh Sửa Khảo Sát</h2>
+        <div class="mb-3">
+            <a th:href="@{/receptionist/list-surveys}" class="btn btn-secondary">Quay lại Danh Sách</a>
+        </div>
+
+        <!-- Hiển thị thông báo lỗi -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Thông tin đơn hàng -->
+        <div class="survey-details">
+            <h5>Thông Tin Đơn Hàng</h5>
+            <p><strong>Mã Đơn:</strong> <span th:text="${survey.order.orderCode}"></span></p>
+            <p><strong>Nhân Viên Khảo Sát:</strong> <span th:text="${survey.surveyor.fullName}"></span></p>
+            <p><strong>Ngày Khảo Sát:</strong> <span th:text="${#dates.format(survey.surveyDate, 'dd/MM/yyyy')}"></span></p>
+        </div>
+
+        <!-- Form chỉnh sửa -->
+        <form th:action="@{/receptionist/edit-survey}" method="post" class="card p-4">
+            <input type="hidden" name="surveyId" th:value="${survey.surveyId}">
+            
+            <div class="mb-3">
+                <label for="status" class="form-label">Trạng Thái</label>
+                <select name="status" id="status" class="form-select" required>
+                    <option value="pending" th:selected="${survey.status == 'pending'}">Đang chờ</option>
+                    <option value="completed" th:selected="${survey.status == 'completed'}">Hoàn thành</option>
+                    <option value="cancelled" th:selected="${survey.status == 'cancelled'}">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="surveyResults" class="form-label">Kết Quả Khảo Sát</label>
+                <textarea name="surveyResults" id="surveyResults" class="form-control" rows="5" 
+                          th:text="${survey.surveyResults}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Cập Nhật Khảo Sát</button>
+                <a th:href="@{/receptionist/surveys(surveyId=${survey.surveyId})}" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html> 
